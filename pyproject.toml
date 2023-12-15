@@ -1,0 +1,18 @@
+[project]
+name = "gnuscreen"
+version = "1.0"
+dependencies = []
+requires-python= ">= 3.8"
+authors = [
+    {name = "Gerard"},
+    {email = "gweatherby@uchc.edu"}
+]
+dynamic = ["license"] 
+
+[project.scripts]
+gnuscreen = "gnuscreen.main:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
