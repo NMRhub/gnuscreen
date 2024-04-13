@@ -1,13 +1,18 @@
 [project]
-name = "gnuscreen"
-version = "1.1"
+name = "gnu-screen-class"
+version = "1.2"
 dependencies = []
+description = "wrapper around gnu screen"
+readme = "README.md"
+license = { file = "LICENSE" }
 requires-python= ">= 3.8"
 authors = [
     {name = "Gerard"},
     {email = "gweatherby@uchc.edu"}
 ]
-dynamic = ["license"] 
+
+[project.urls]
+Homepage = "https://github.com/NMRhub/gnuscreen"
 
 [project.scripts]
 gnuscreen = "gnuscreen.main:main"

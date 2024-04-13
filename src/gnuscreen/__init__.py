@@ -23,6 +23,7 @@ class GnuScreen:
 
     @property
     def exists(self) -> bool:
+        """Return true if screen with 'name' exists"""
         try:
             os.kill(self.id, 0)
             return True
@@ -40,14 +41,14 @@ class GnuScreen:
         subprocess.run(bcmd, check=True)
 
     def close(self):
-        """Close remote screen"""
+        """Close screen"""
         cmd = ('/usr/bin/screen', '-S', str(self.id), '-X', 'kill')
         subprocess.run(cmd, check=True)
         gnuscreen_logger.debug(f'Set {cmd}')
 
     @staticmethod
     def query(name: str) -> Optional['GnuScreen']:
-        """Get existing screen or create new one"""
+        """Get existing screen if it exists""" 
         if (gs := _CACHE.get(name)) is not None:
             gnuscreen_logger.info(f'existing {name}')
             return gs

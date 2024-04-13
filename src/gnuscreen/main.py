@@ -8,7 +8,7 @@ from gnuscreen import gnuscreen_logger, GnuScreen,__version__ as gnuscreen_versi
 
 def main():
     logging.basicConfig()
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser()
     parser.add_argument('-l', '--loglevel', default='WARN', help="Python logging level")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--list',action='store_true', help="List screens")
