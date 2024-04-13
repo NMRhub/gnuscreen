@@ -22,7 +22,7 @@ class GnuScreen:
     attached: bool
 
     @property
-    def exists(self)->bool:
+    def exists(self) -> bool:
         try:
             os.kill(self.id, 0)
             return True
@@ -31,48 +31,49 @@ class GnuScreen:
                 return False
             raise
 
-    def execute(self,cmds):
-        """Execute a command on screen"""
+    def execute(self, cmds: Iterable[str]) -> None:
+        """Execute commands on screen"""
+        if isinstance(cmds,str):
+            raise ValueError("Pass tuple or list of strings, not a string")
         bcmd = ['/usr/bin/screen', '-S', str(self.id), '-X', 'exec', '.!!', 'echo']
         bcmd.extend(cmds)
-        subprocess.run(bcmd,check=True)
+        subprocess.run(bcmd, check=True)
 
     def close(self):
         """Close remote screen"""
         cmd = ('/usr/bin/screen', '-S', str(self.id), '-X', 'kill')
-        subprocess.run(cmd,check=True)
+        subprocess.run(cmd, check=True)
         gnuscreen_logger.debug(f'Set {cmd}')
 
     @staticmethod
-    def query(name:str)->Optional['GnuScreen']:
+    def query(name: str) -> Optional['GnuScreen']:
         """Get existing screen or create new one"""
         if (gs := _CACHE.get(name)) is not None:
             gnuscreen_logger.info(f'existing {name}')
             return gs
         gnuscreen_logger.debug('refreshing cache')
-        GnuScreen.list() #refresh cache
+        GnuScreen.list()  # refresh cache
         if gnuscreen_logger.isEnabledFor(logging.DEBUG):
-            for k,v in _CACHE.items():
+            for k, v in _CACHE.items():
                 gnuscreen_logger.debug(f'{k} = {v}')
         return _CACHE.get(name)
 
     @staticmethod
-    def get(name:str)->'GnuScreen':
+    def get(name: str) -> 'GnuScreen':
         """Get existing screen or create new one"""
         if (gs := GnuScreen.query(name)) is None:
-            subprocess.run((_EXE,'-S',name,'-m','-d'),stderr=subprocess.PIPE,stdout=subprocess.PIPE,
-                           start_new_session=True,check=True)
+            subprocess.run((_EXE, '-S', name, '-m', '-d'), stderr=subprocess.PIPE, stdout=subprocess.PIPE,
+                           start_new_session=True, check=True)
             return GnuScreen.query(name)
         else:
             return gs
-
 
     @staticmethod
     def list() -> Iterable['GnuScreen']:
         """List existing screens"""
         global _CACHE
         current = {}
-        cp = subprocess.run((_EXE, '-ls'), stderr=subprocess.PIPE, stdout=subprocess.PIPE, text=True, check=True)
+        cp = subprocess.run((_EXE, '-ls'), stderr=subprocess.PIPE, stdout=subprocess.PIPE, text=True, check=False)
         for line in cp.stdout.split('\n'):
             gnuscreen_logger.debug(line)
             parts = line.split('.')
